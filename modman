@@ -1,0 +1,4 @@
+app/locale/pl_PL/Mf_ShippingRule.csv  app/locale/pl_PL/Mf_ShippingRule.csv
+app/code/community/Mf  app/code/community/Mf
+app/etc/modules/Mf_ShippingRule.xml  app/etc/modules/Mf_ShippingRule.xml
+app/design/adminhtml/default/default/layout/mf  app/design/adminhtml/default/default/layout/mf

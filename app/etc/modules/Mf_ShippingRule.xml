@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Mf_ShippingRule>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Mage_Sales />
+                <Mage_Shipping />
+            </depends>
+        </Mf_ShippingRule>
+    </modules>
+</config>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<layout>
+  <adminhtml_shippingrule_index>
+        <reference name="content">
+            <block type="mf_shippingrule/adminhtml_shippingrule" name="mf_shippingrule" />
+        </reference>
+  </adminhtml_shippingrule_index>
+  <adminhtml_shippingrule_edit>
+        <reference name="head">
+            <action method="setCanLoadExtJs"><flag>1</flag></action>
+            <action method="setCanLoadRulesJs"><flag>1</flag></action>
+        </reference>
+        <reference name="left">
+            <block type="mf_shippingrule/adminhtml_shippingrule_edit_tabs" name="mf_shippingrule_edit_tabs">
+                <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_main" name="mf_shippingrule_edit_tab_main" />
+                <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_conditions" name="mf_shippingrule_edit_tab_conditions" />
+                <action method="addTab"><name>main</name><block>mf_shippingrule_edit_tab_main</block></action>
+                <action method="addTab"><name>conditions</name><block>mf_shippingrule_edit_tab_conditions</block></action>
+            </block>
+        </reference>
+        <reference name="content">
+            <block type="mf_shippingrule/adminhtml_shippingrule_edit" name="mf_shippingrule_edit" />
+        </reference>
+    </adminhtml_shippingrule_edit>
+    <adminhtml_shippingrule_grid>
+        <remove name="root" />
+        <block type="mf_shippingrule/adminhtml_shippingrule_grid" name="shippingrule_grid" output="toHtml" />
+    </adminhtml_shippingrule_grid>
+</layout>
