@@ -8,7 +8,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule
         $this->_controller = 'adminhtml_shippingrule';
         $this->_blockGroup = 'mf_shippingrule';
         $this->_headerText = Mage::helper('mf_shippingrule')->__('Manage Rules');
-        $this->_addButtonLabel = Mage::helper('mf_shippingrule')->__('Add New Rule');
+        $this->_addButtonLabel = Mage::helper('mf_shippingrule')->__('Add Rule');
 
         parent::__construct();
     }
