@@ -43,6 +43,14 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
             'type' => 'currency',
         ));
 
+        $this->addColumn('price_calculation_method', array(
+            'header' => Mage::helper('adminhtml')->__('Price Calculation Method'),
+            'index' => 'price_calculation_method',
+            'type' => 'options',
+            'options' => Mage::getSingleton('mf_shippingrule/rule_price_calculation')->getOptionArray(),
+            'width' => 160,
+        ));
+
         $this->addColumn('sort_order', array(
             'header' => Mage::helper('catalog')->__('Sort Order'),
             'index' => 'sort_order',

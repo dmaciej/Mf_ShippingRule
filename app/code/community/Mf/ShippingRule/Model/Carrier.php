@@ -88,15 +88,15 @@ class Mf_ShippingRule_Model_Carrier
         $rate->setMethodTitle($rule->getName());
 
         switch ($rule->getPriceCalculationMethod()) {
-            case 'item_quantity':
+            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ITEM_QUANTITY:
                 $price = $rule->getPrice() * $request->getPackageQty();
                 break;
 
-            case 'weight_unit':
+            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_WEIGHT_UNIT:
                 $price = $rule->getPrice() * $request->getPackageWeight();
                 break;
 
-            case 'order':
+            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ORDER:
             default:
                 $price = $rule->getPrice();
                 break;
