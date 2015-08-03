@@ -14,6 +14,32 @@ class Mf_ShippingRule_Model_Carrier
             return false;
         }
 
+        $freeQty = 0;
+        if ($request->getAllItems()) {
+            foreach ($request->getAllItems() as $item) {
+                if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
+                    continue;
+                }
+
+                if ($item->getHasChildren() && $item->isShipSeparately()) {
+                    foreach ($item->getChildren() as $child) {
+                        if ($child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
+                            $freeQty += $item->getQty() * $child->getQty();
+                        }
+                    }
+                } elseif ($item->getFreeShipping()) {
+                    $freeQty += $item->getQty();
+                }
+            }
+        }
+
+        // Package weight and qty free shipping
+        $oldWeight = $request->getPackageWeight();
+        $oldQty = $request->getPackageQty();
+
+        $request->setPackageWeight($request->getFreeMethodWeight());
+        $request->setPackageQty($oldQty - $freeQty);
+
         /* @var $result Mage_Shipping_Model_Rate_Result */
         $result = Mage::getModel('shipping/rate_result');
 
@@ -38,27 +64,45 @@ class Mf_ShippingRule_Model_Carrier
 
         foreach ($rules as $rule) {
             if ($rule->getConditions()->validate($object)) {
-                $result->append($this->_getShippingRate($rule));
+                $result->append($this->_getShippingRate($rule, $request));
                 if ($rule->getStopRulesProcessing()) {
                     break;
                 }
             }
         }
 
+        $request->setPackageWeight($oldWeight);
+        $request->setPackageQty($oldQty);
+
         return $result;
     }
 
-    protected function _getShippingRate(Mf_ShippingRule_Model_Rule $rule)
+    protected function _getShippingRate(Mf_ShippingRule_Model_Rule $rule, Mage_Shipping_Model_Rate_Request $request)
     {
         /* @var $rate Mage_Shipping_Model_Rate_Result_Method */
         $rate = Mage::getModel('shipping/rate_result_method');
 
         $rate->setCarrier($this->_code);
-
         $rate->setCarrierTitle($this->getConfigData('name'));
         $rate->setMethod($rule->getId());
         $rate->setMethodTitle($rule->getName());
-        $rate->setPrice($rule->getPrice());
+
+        switch ($rule->getPriceCalculationMethod()) {
+            case 'item_quantity':
+                $price = $rule->getPrice() * $request->getPackageQty();
+                break;
+
+            case 'weight_unit':
+                $price = $rule->getPrice() * $request->getPackageWeight();
+                break;
+
+            case 'order':
+            default:
+                $price = $rule->getPrice();
+                break;
+        }
+        $rate->setPrice($price);
+
         $rate->setCost(0);
 
         return $rate;

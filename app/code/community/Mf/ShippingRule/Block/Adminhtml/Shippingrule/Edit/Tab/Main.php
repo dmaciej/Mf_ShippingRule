@@ -20,9 +20,20 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
         ));
         
         $fieldset->addField('price', 'text', array(
-            'label' => Mage::helper('mf_shippingrule')->__('Cost'),
+            'label' => Mage::helper('mf_shippingrule')->__('Price'),
             'required' => true,
             'name' => 'price',
+        ));
+
+        $fieldset->addField('price_calculation_method', 'select', array(
+            'label' => Mage::helper('mf_shippingrule')->__('Price Calculation Method'),
+            'required' => true,
+            'name' => 'price_calculation_method',
+            'options' => array(
+                'item_quantity' => Mage::helper('mf_shippingrule')->__('Single Item Quantity'),
+                'weight_unit' => Mage::helper('mf_shippingrule')->__('Weight Unit'),
+                'order' => Mage::helper('mf_shippingrule')->__('Entire Order'),
+            ),
         ));
 
         $fieldset->addField('stop_rules_processing', 'select', array(
