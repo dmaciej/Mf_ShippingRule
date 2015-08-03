@@ -13,9 +13,9 @@
         <reference name="left">
             <block type="mf_shippingrule/adminhtml_shippingrule_edit_tabs" name="mf_shippingrule_edit_tabs">
                 <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_main" name="mf_shippingrule_edit_tab_main" />
-                <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_conditions" name="mf_shippingrule_edit_tab_conditions" />
+                <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_payments" name="mf_shippingrule_edit_tab_payments" />
                 <action method="addTab"><name>main</name><block>mf_shippingrule_edit_tab_main</block></action>
-                <action method="addTab"><name>conditions</name><block>mf_shippingrule_edit_tab_conditions</block></action>
+                <action method="addTab"><name>payments</name><block>mf_shippingrule_edit_tab_payments</block></action>
             </block>
         </reference>
         <reference name="content">

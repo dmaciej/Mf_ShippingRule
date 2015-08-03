@@ -10,17 +10,17 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
         $form = new Varien_Data_Form();
         
         $fieldset = $form->addFieldset('rule_information', array(
-            'legend' => Mage::helper('mf_shippingrule')->__('Shipping Rule')
+            'legend' => Mage::helper('mf_shippingrule')->__('Rule')
         ));
 
         $fieldset->addField('name', 'text', array(
-            'label' => Mage::helper('mf_shippingrule')->__('Method Name'),
+            'label' => Mage::helper('mf_shippingrule')->__('Name'),
             'required' => true,
             'name' => 'name',
         ));
         
         $fieldset->addField('price', 'text', array(
-            'label' => Mage::helper('mf_shippingrule')->__('Method Price'),
+            'label' => Mage::helper('mf_shippingrule')->__('Cost'),
             'required' => true,
             'name' => 'price',
         ));
@@ -58,36 +58,28 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
             $model->setData('sort_order', '1000');
         }
 
-        $fieldset = $form->addFieldset('payment', array(
-            'legend' => Mage::helper('mf_shippingrule')->__('Payment Methods')
-        ));
+        $model->getConditions()->setJsFormObject('rule_conditions_fieldset');
 
-        $fieldset->addField('payment_method', 'multiselect', array(
-            'label' => Mage::helper('mf_shippingrule')->__('Allowed Payment Methods'),
-            'name' => 'payment_method',
+        $renderer = Mage::getBlockSingleton('adminhtml/widget_form_renderer_fieldset')
+            ->setTemplate('promo/fieldset.phtml')
+            ->setNewChildUrl($this->getUrl('*/*/newConditionHtml/form/rule_conditions_fieldset'));
+
+        $fieldset = $form->addFieldset('conditions_fieldset', array(
+            'legend'=>Mage::helper('mf_shippingrule')->__('Conditions'))
+        )->setRenderer($renderer);
+
+        $fieldset->addField('conditions', 'text', array(
+            'name' => 'conditions',
+            'label' => Mage::helper('mf_shippingrule')->__('Conditions'),
+            'title' => Mage::helper('mf_shippingrule')->__('Conditions'),
             'required' => true,
-            'values' => $this->_getPaymentMethodOptions(),
-            'note'  => Mage::helper('mf_shippingrule')->__('Select payment methods to be available after choosing this shipping method.'),
-        ));
+        ))->setRule($model)->setRenderer(Mage::getBlockSingleton('rule/conditions'));
 
         $form->setValues($model->getData());
         $form->setFieldNameSuffix('rule');
         $this->setForm($form);
 
         return parent::_prepareForm();
-    }
-
-    protected function _getPaymentMethodOptions()
-    {
-        $methods = Mage::getModel('payment/config')->getAllMethods();
-        $options = array();
-        foreach ($methods as $code => $method) {
-            $options[] = array(
-                'value' => $code,
-                'label' => $method->getTitle(),
-            );
-        }
-        return $options;
     }
 
     public function getTabLabel()
