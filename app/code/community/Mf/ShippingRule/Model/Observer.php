@@ -20,6 +20,10 @@ class Mf_ShippingRule_Model_Observer
     public function validatePayments(Varien_Event_Observer $observer)
     {
         $quote = $observer->getEvent()->getQuote();
+        if (!$quote) {
+            return;
+        }
+
         $methodInstance = $observer->getEvent()->getMethodInstance();
         $shippingMethod = $quote->getShippingAddress()->getShippingMethod();
 
