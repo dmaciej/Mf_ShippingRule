@@ -7,12 +7,22 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit
     {
         parent::__construct();
 
-        $this->_objectId = 'rule_id';
         $this->_blockGroup = 'mf_shippingrule';
         $this->_controller = 'adminhtml_shippingrule';
         
         $this->_updateButton('save', 'label', Mage::helper('mf_shippingrule')->__('Save Rule'));
         $this->_updateButton('delete', 'label', Mage::helper('mf_shippingrule')->__('Delete Rule'));
+
+        if ($this->getRule()->isDuplicable()) {
+            $this->_addButton(
+                'duplicate',
+                array(
+                    'label' => Mage::helper('mf_shippingrule')->__('Duplicate'),
+                    'onclick' => 'setLocation(\''.$this->getDuplicateUrl().'\')',
+                    'class' => 'add',
+                )
+            );
+        }
 
         $this->_addButton(
             'saveandcontinue', 
@@ -20,21 +30,9 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit
                 'label' => Mage::helper('mf_shippingrule')->__('Save and Continue Edit'),
                 'onclick' => 'saveAndContinueEdit()',
                 'class' => 'save',
-            ), 
-            -100
+            ),
+            2
         );
-
-        if ($this->getRule() && $this->getRule()->getId()) {
-            $this->_addButton(
-                'duplicate',
-                array(
-                    'label' => Mage::helper('mf_shippingrule')->__('Duplicate'),
-                    'onclick' => 'setLocation(\''.$this->getDuplicateUrl().'\')',
-                    'class' => 'add',
-                ),
-                -100
-            );
-        }
 
         $this->_formScripts[] = '
             function saveAndContinueEdit(){
