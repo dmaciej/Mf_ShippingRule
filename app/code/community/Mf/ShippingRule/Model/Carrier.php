@@ -105,7 +105,7 @@ class Mf_ShippingRule_Model_Carrier
         $rate->setCost(0);
         
         $params = array('rate' => $rate, 'rule' => $rule, 'request' => $request);
-        Mage::dispatchEvent('mf_shippingrule_prepare_shipping_rate', $params);
+        Mage::dispatchEvent('mf_shippingrule_prepare_rate', $params);
 
         return $rate;
     }
