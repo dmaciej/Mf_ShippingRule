@@ -4,7 +4,6 @@ class Mf_ShippingRule_Model_Observer
 {
     public function addProductAttributes(Varien_Event_Observer $observer)
     {
-        // @var Varien_Object
         $attributesTransfer = $observer->getEvent()->getAttributes();
 
         $attributes = Mage::getResourceModel('mf_shippingrule/rule')
