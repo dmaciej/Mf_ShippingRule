@@ -64,7 +64,7 @@ class Mf_ShippingRule_Model_Carrier
 
         foreach ($rules as $rule) {
             if ($rule->getConditions()->validate($object)) {
-                $result->append($this->getRate($request));
+                $result->append($rule->getRate($request));
                 if ($rule->getStopRulesProcessing()) {
                     break;
                 }
