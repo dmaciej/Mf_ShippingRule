@@ -15,4 +15,22 @@ class Mf_ShippingRule_Model_Rule_Price_Calculation
             self::METHOD_ORDER => Mage::helper('mf_shippingrule')->__('Entire Order'),
         );
     }
+    
+    public function calculatePrice($price, $method, Mage_Shipping_Model_Rate_Request $request)
+    {
+        switch ($method) {
+            case self::METHOD_ITEM_QUANTITY:
+                return $price * $request->getPackageQty();
+                break;
+
+            case self::METHOD_WEIGHT_UNIT:
+                return $price * $request->getPackageWeight();
+                break;
+
+            case self::METHOD_ORDER:
+            default:
+                return $price;
+                break;
+        }
+    }
 }
