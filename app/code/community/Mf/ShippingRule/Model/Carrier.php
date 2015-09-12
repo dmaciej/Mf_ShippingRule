@@ -64,7 +64,7 @@ class Mf_ShippingRule_Model_Carrier
 
         foreach ($rules as $rule) {
             if ($rule->getConditions()->validate($object)) {
-                $result->append($this->_getShippingRate($rule, $request));
+                $result->append($this->getRate($request));
                 if ($rule->getStopRulesProcessing()) {
                     break;
                 }
@@ -75,39 +75,6 @@ class Mf_ShippingRule_Model_Carrier
         $request->setPackageQty($oldQty);
 
         return $result;
-    }
-
-    protected function _getShippingRate(Mf_ShippingRule_Model_Rule $rule, Mage_Shipping_Model_Rate_Request $request)
-    {
-        /* @var $rate Mage_Shipping_Model_Rate_Result_Method */
-        $rate = Mage::getModel('shipping/rate_result_method');
-
-        $rate->setCarrier($this->_code);
-        $rate->setCarrierTitle($this->getConfigData('name'));
-        $rate->setMethod($rule->getId());
-        $rate->setMethodTitle($rule->getName());
-
-        switch ($rule->getPriceCalculationMethod()) {
-            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ITEM_QUANTITY:
-                $price = $rule->getPrice() * $request->getPackageQty();
-                break;
-
-            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_WEIGHT_UNIT:
-                $price = $rule->getPrice() * $request->getPackageWeight();
-                break;
-
-            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ORDER:
-            default:
-                $price = $rule->getPrice();
-                break;
-        }
-        $rate->setPrice($price);
-        $rate->setCost(0);
-        
-        $params = array('rate' => $rate, 'rule' => $rule, 'request' => $request);
-        Mage::dispatchEvent('mf_shippingrule_prepare_rate', $params);
-
-        return $rate;
     }
 
     public function getAllowedMethods()
