@@ -17,13 +17,13 @@ class Mf_ShippingRule_Model_Rule extends Mage_SalesRule_Model_Rule
         return Mage::getModel('mf_shippingrule/rule_condition_combine');
     }
     
-    public function getRate(Mage_Shipping_Model_Rate_Request $request)
+    public function prepareRate(Mage_Shipping_Model_Carrier_Abstract $carrier, Mage_Shipping_Model_Rate_Request $request)
     {
         /* @var $rate Mage_Shipping_Model_Rate_Result_Method */
         $rate = Mage::getModel('shipping/rate_result_method');
 
-        $rate->setCarrier($this->_code);
-        $rate->setCarrierTitle($this->getConfigData('name'));
+        $rate->setCarrier($carrier->getCarrierCode());
+        $rate->setCarrierTitle($carrier->getConfigData('name'));
         $rate->setMethod($this->getId());
         $rate->setMethodTitle($this->getName());
 
