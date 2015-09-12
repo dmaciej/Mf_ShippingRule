@@ -27,19 +27,23 @@ class Mf_ShippingRule_Model_Rule extends Mage_SalesRule_Model_Rule
         $rate->setMethod($this->getId());
         $rate->setMethodTitle($this->getName());
 
-        switch ($this->getPriceCalculationMethod()) {
-            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ITEM_QUANTITY:
-                $price = $this->getPrice() * $request->getPackageQty();
-                break;
+        if ($request->getFreeShipping() === true) {
+            $price = '0.00';
+        } else {
+            switch ($this->getPriceCalculationMethod()) {
+                case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ITEM_QUANTITY:
+                    $price = $this->getPrice() * $request->getPackageQty();
+                    break;
 
-            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_WEIGHT_UNIT:
-                $price = $this->getPrice() * $request->getPackageWeight();
-                break;
+                case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_WEIGHT_UNIT:
+                    $price = $this->getPrice() * $request->getPackageWeight();
+                    break;
 
-            case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ORDER:
-            default:
-                $price = $this->getPrice();
-                break;
+                case Mf_ShippingRule_Model_Rule_Price_Calculation::METHOD_ORDER:
+                default:
+                    $price = $this->getPrice();
+                    break;
+            }
         }
         $rate->setPrice($price);
         $rate->setCost(0);
