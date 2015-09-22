@@ -59,6 +59,8 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
                 return 'time';
 
             case 'day_of_week':
+                return 'grid';
+
             case 'customer_group':
                 return 'multiselect';
 
