@@ -55,9 +55,14 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Payments
             if (!$method->canUseCheckout()) {
                 continue;
             }
+            if ($method->isAvailable()) {
+                $label = sprintf('%s (%s)', $method->getTitle(), Mage::helper('mf_shippingrule')->__('Available'));
+            } else {
+                $method->getTitle();
+            }
             $options[] = array(
                 'value' => $code,
-                'label' => $method->getTitle(),
+                'label' => $label,
             );
         }
         return $options;
