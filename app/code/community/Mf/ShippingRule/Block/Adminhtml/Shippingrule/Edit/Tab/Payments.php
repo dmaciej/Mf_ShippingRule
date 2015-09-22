@@ -52,6 +52,9 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Payments
         $methods = Mage::getModel('payment/config')->getAllMethods();
         $options = array();
         foreach ($methods as $code => $method) {
+            if (!$method->canUseCheckout()) {
+                continue;
+            }
             $options[] = array(
                 'value' => $code,
                 'label' => $method->getTitle(),
