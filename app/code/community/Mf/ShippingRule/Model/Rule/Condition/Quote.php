@@ -18,6 +18,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
     public function loadAttributeOptions()
     {
         $attributes = array(
+            'day_of_week' => Mage::helper('mf_shippingrule')->__('Day of week'),
             'time' => Mage::helper('mf_shippingrule')->__('Order Time'),
             'date' => Mage::helper('mf_shippingrule')->__('Order Date'),
             'customer_group' => Mage::helper('customer')->__('Customer Group'),
@@ -57,6 +58,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
             case 'time':
                 return 'time';
 
+            case 'day_of_week':
             case 'customer_group':
                 return 'multiselect';
 
@@ -72,6 +74,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
     public function getValueElementType()
     {
         switch ($this->getAttribute()) {
+            case 'day_of_week':
             case 'customer_group':
                 return 'multiselect';
 
@@ -94,6 +97,11 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
     {
         if (!$this->hasData('value_select_options')) {
             switch ($this->getAttribute()) {
+                case 'day_of_week':
+                    $options = Mage::getSingleton('adminhtml/system_config_source_locale_weekdays')
+                        ->toOptionArray();
+                    break;
+
                 case 'customer_group':
                     $options = Mage::getResourceModel('customer/group_collection')
                         ->toOptionArray();

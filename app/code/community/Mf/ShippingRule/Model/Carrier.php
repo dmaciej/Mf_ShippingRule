@@ -51,6 +51,7 @@ class Mf_ShippingRule_Model_Carrier
 
         $object = clone $request;
         $object->addData(array(
+            'day_of_week' => Mage::getModel('core/date')->date('N'),
             'time' => Mage::getModel('core/date')->date('H:i'),
             'date' => Mage::getModel('core/date')->date('Y-m-d'),
             'customer_group' => $customer->getCustomerGroupId(),
