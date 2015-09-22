@@ -18,7 +18,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
     public function loadAttributeOptions()
     {
         $attributes = array(
-            'day_of_week' => Mage::helper('mf_shippingrule')->__('Day of week'),
+            'day_of_week' => Mage::helper('mf_shippingrule')->__('Day of Week'),
             'time' => Mage::helper('mf_shippingrule')->__('Order Time'),
             'date' => Mage::helper('mf_shippingrule')->__('Order Date'),
             'customer_group' => Mage::helper('customer')->__('Customer Group'),
