@@ -2,10 +2,24 @@
 
 class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Condition_Abstract
 {
+    /**
+     * Default operator input by type map getter
+     *
+     * @return array
+     */
+    public function getDefaultOperatorInputByType()
+    {
+        $this->_defaultOperatorInputByType = parent::getDefaultOperatorInputByType();
+        $this->_defaultOperatorInputByType['time'] = array('==', '>=', '<=');
+
+        return $this->_defaultOperatorInputByType;
+    }
+
     public function loadAttributeOptions()
     {
         $attributes = array(
-            'date' => Mage::helper('adminhtml')->__('Date'),
+            'time' => Mage::helper('mf_shippingrule')->__('Order Time'),
+            'date' => Mage::helper('mf_shippingrule')->__('Order Date'),
             'customer_group' => Mage::helper('customer')->__('Customer Group'),
             'base_subtotal' => Mage::helper('salesrule')->__('Subtotal'),
             'total_qty' => Mage::helper('salesrule')->__('Total Items Quantity'),
@@ -25,28 +39,31 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
     {
         $element = parent::getAttributeElement();
         $element->setShowAsText(true);
-        
+
         return $element;
     }
 
     public function getInputType()
     {
         switch ($this->getAttribute()) {
-            case 'base_subtotal': 
-            case 'weight': 
+            case 'base_subtotal':
+            case 'weight':
             case 'total_qty':
                 return 'numeric';
-                
+
             case 'date':
                 return 'date';
 
+            case 'time':
+                return 'time';
+
             case 'customer_group':
                 return 'multiselect';
-                
-            case 'country_id': 
+
+            case 'country_id':
             case 'region_id':
                 return 'select';
-                
+
             default:
                 return 'string';
         }
@@ -58,13 +75,16 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
             case 'customer_group':
                 return 'multiselect';
 
-            case 'country_id': 
+            case 'country_id':
             case 'region_id':
                 return 'select';
-                
+
             case 'date':
                 return 'date';
-                
+
+            case 'time':
+                return 'text';
+
             default:
                 return 'text';
         }
@@ -78,7 +98,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
                     $options = Mage::getResourceModel('customer/group_collection')
                         ->toOptionArray();
                     break;
-                    
+
                 case 'country_id':
                     $options = Mage::getModel('adminhtml/system_config_source_country')
                         ->toOptionArray();
@@ -94,7 +114,98 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
             }
             $this->setData('value_select_options', $options);
         }
-        
+
         return $this->getData('value_select_options');
+    }
+
+    /**
+     * Validate product attrbute value for condition
+     *
+     * @param   mixed $validatedValue product attribute value
+     * @return  bool
+     */
+    public function validateAttribute($validatedValue)
+    {
+        if (is_object($validatedValue)) {
+            return false;
+        }
+
+        /**
+         * Condition attribute value
+         */
+        $value = $this->getValueParsed();
+
+        /**
+         * Comparison operator
+         */
+        $op = $this->getOperatorForValidate();
+
+        // if operator requires array and it is not, or on opposite, return false
+        if ($this->isArrayOperatorType() xor is_array($value)) {
+            return false;
+        }
+
+        $result = false;
+
+        if ($this->getInputType() == 'time') {
+            list($valueHour, $valueMinutes) = $this->_parseTimeValue($value);
+            list($validatedValueHour, $validatedValueMinutes) = $this->_parseTimeValue($validatedValue);
+
+            switch ($op) {
+                case '==':
+                case '!=':
+                    $result = $this->_compareValues($validatedValueHour, $valueHour)
+                        && $this->_compareValues($validatedValueMinutes, $valueMinutes);
+                    break;
+
+                case '<=':
+                case '>':
+                    if ($validatedValueHour <= $valueHour) {
+                        $result = true;
+                    } elseif ($validatedValueHour == $valueHour) {
+                        $result = $validatedValueMinutes <= $valueMinutes;
+                    } else {
+                        $result = false;
+                    }
+                    break;
+
+                case '>=':
+                case '<':
+                    if ($validatedValueHour <= $valueHour) {
+                        $result = false;
+                    } elseif ($validatedValueHour == $valueHour) {
+                        $result = $validatedValueMinutes >= $valueMinutes;
+                    } else {
+                        $result = true;
+                    }
+                    break;
+            }
+
+            if ('!=' == $op || '>' == $op || '<' == $op) {
+                $result = !$result;
+            }
+
+            return $result;
+        } else {
+            return parent::validateAttribute($validatedValue);
+        }
+    }
+
+    /**
+     * @param string $value
+     * @return array
+     */
+    protected function _parseTimeValue($value)
+    {
+        if (strpos($value, ':') === false) {
+            $hour = (int) $value;
+            $minutes = (int) '00';
+        } else {
+            list($hour, $minutes) = explode(':', $value);
+            $hour = (int) $hour;
+            $minutes = (int) $minutes;
+        }
+
+        return array($hour, $minutes);
     }
 }
