@@ -10,7 +10,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
     public function getDefaultOperatorInputByType()
     {
         $this->_defaultOperatorInputByType = parent::getDefaultOperatorInputByType();
-        $this->_defaultOperatorInputByType['time'] = array('==', '>=', '<=');
+        $this->_defaultOperatorInputByType['time'] = array('==', '>=', '<=', '<', '>');
 
         return $this->_defaultOperatorInputByType;
     }
@@ -160,7 +160,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
 
                 case '<=':
                 case '>':
-                    if ($validatedValueHour <= $valueHour) {
+                    if ($validatedValueHour < $valueHour) {
                         $result = true;
                     } elseif ($validatedValueHour == $valueHour) {
                         $result = $validatedValueMinutes <= $valueMinutes;
@@ -171,7 +171,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
 
                 case '>=':
                 case '<':
-                    if ($validatedValueHour <= $valueHour) {
+                    if ($validatedValueHour < $valueHour) {
                         $result = false;
                     } elseif ($validatedValueHour == $valueHour) {
                         $result = $validatedValueMinutes >= $valueMinutes;
