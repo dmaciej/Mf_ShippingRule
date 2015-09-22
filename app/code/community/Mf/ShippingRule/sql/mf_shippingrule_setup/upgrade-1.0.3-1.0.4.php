@@ -10,7 +10,7 @@ $installer->startSetup();
 $table = $installer->getConnection()
     ->addColumn(
         $installer->getTable('mf_shippingrule/rule'),
-        'method_description',
+        'description',
         array(
             'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
             'length' => '1M',
