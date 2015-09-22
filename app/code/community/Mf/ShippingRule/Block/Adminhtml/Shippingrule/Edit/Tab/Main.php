@@ -18,7 +18,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
             'required' => true,
             'name' => 'name',
         ));
-        
+
         $fieldset->addField('price', 'text', array(
             'label' => Mage::helper('mf_shippingrule')->__('Price'),
             'required' => true,
@@ -64,10 +64,6 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
         if (!$model->getId()) {
             $model->setData('sort_order', '1000');
         }
-        $fieldset->addField('description', 'textarea', array(
-            'name'  => 'description',
-            'label' => Mage::helper('mf_shippingrule')->__('Description'),
-        ));
 
         $model->getConditions()->setJsFormObject('rule_conditions_fieldset');
 

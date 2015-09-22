@@ -36,6 +36,11 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
             'index' => 'name',
         ));
 
+        $this->addColumn('code', array(
+            'header' => Mage::helper('adminhtml')->__('Method Code'),
+            'index' => 'code',
+        ));
+
         $this->addColumn('price', array(
             'header' => Mage::helper('adminhtml')->__('Price'),
             'index' => 'price',
