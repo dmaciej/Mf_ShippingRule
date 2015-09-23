@@ -66,7 +66,12 @@ class Mf_ShippingRule_Model_Carrier
         ));
 
         foreach ($rules as $rule) {
-            if ($rule->getConditions()->validate($object)) {
+            $validated = $rule->getConditions()->validate($object);
+            
+            $params = array('rule' => $rule, 'request' => $request, 'validated' => $validated);
+            Mage::dispatchEvent('mf_shippingrule_rate_validate', $params);
+            
+            if ($validated) {
                 $result->append($rule->prepareRate($this, $request));
                 if ($rule->getStopRulesProcessing()) {
                     break;
