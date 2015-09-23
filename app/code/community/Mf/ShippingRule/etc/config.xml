@@ -34,8 +34,7 @@
             </mf_shippingrule_resource>
             <salesrule>
                 <rewrite>
-                    <rule_condition_product>Mf_ShippingRule_Model_SalesRule_Rule_Condition_Product</rule_condition_product>
-                    <rule_condition_product_subselect>Mf_ShippingRule_Model_SalesRule_Rule_Condition_Product_Subselect</rule_condition_product_subselect>
+                    <rule_condition_product_found>Mf_ShippingRule_Model_SalesRule_Rule_Condition_Product_Found</rule_condition_product_found>
                 </rewrite>
             </salesrule>
         </models>
