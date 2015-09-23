@@ -128,6 +128,14 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
         return $this->getData('value_select_options');
     }
 
+    public function validate(Varien_Object $object)
+    {
+        if (!$object->getData($this->getAttribute())) {
+            $object->setData($this->getAttribute(), 0);
+        }
+        return $this->validateAttribute($object->getData($this->getAttribute()));
+    }
+
     /**
      * Validate product attrbute value for condition
      *

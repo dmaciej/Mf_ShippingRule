@@ -32,6 +32,11 @@
                     </product_attribute>
                 </entities>
             </mf_shippingrule_resource>
+            <salesrule>
+                <rewrite>
+                    <rule_condition_product_found>Mf_ShippingRule_Model_SalesRule_Rule_Condition_Product_Found</rule_condition_product_found>
+                </rewrite>
+            </salesrule>
         </models>
         <resources>
             <mf_shippingrule_setup>
