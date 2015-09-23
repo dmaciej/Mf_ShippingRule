@@ -62,6 +62,7 @@ class Mf_ShippingRule_Model_Carrier
             'region' => $request->getDestRegionCode(),
             'region_id' => $request->getDestRegionId(),
             'country_id' => $request->getDestCountryId(),
+            'quote' => Mage::getSingleton('checkout/session')->getQuote(),
         ));
 
         foreach ($rules as $rule) {
