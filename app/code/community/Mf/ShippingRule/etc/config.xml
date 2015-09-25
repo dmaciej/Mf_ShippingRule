@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Mf_ShippingRule>
-            <version>1.0.5</version>
+            <version>1.1.0</version>
         </Mf_ShippingRule>
     </modules>
     <global>
@@ -27,6 +27,9 @@
                     <rule>
                         <table>mf_shippingrule</table>
                     </rule>
+                    <rule_store>
+                        <table>mf_shippingrule_rule_store</table>
+                    </rule_store>
                     <product_attribute>
                         <table>mf_shippingrule_product_attribute</table>
                     </product_attribute>
@@ -64,16 +67,6 @@
             </payment_method_is_active>
         </events>
     </global>
-    <default>
-        <carriers>
-            <mf_shippingrule>
-                <active>1</active>
-                <model>mf_shippingrule/carrier</model>
-                <sort_order>10</sort_order>
-                <sallowspecific>0</sallowspecific>
-            </mf_shippingrule>
-        </carriers>
-    </default>
     <admin>
         <routers>
             <adminhtml>
@@ -102,46 +95,15 @@
                 </mf_shippingrule>
             </updates>
         </layout>
-        <menu>
-            <sales>
-                <children>
-                    <mf_shippingrule module="mf_shippingrule">
-                        <title>Shipping Rules</title>
-                        <sort_order>100</sort_order>
-                        <children>
-                            <manage translate="title" module="mf_shippingrule">
-                                <title>Manage</title>
-                                <action>adminhtml/shippingrule</action>
-                                <sort_order>1</sort_order>
-                            </manage>
-                            <import translate="title" module="mf_shippingrule">
-                                <title>Import</title>
-                                <action>adminhtml/shippingrule/import</action>
-                                <sort_order>2</sort_order>
-                            </import>
-                        </children>
-                    </mf_shippingrule>
-                </children>
-            </sales>
-        </menu>
-        <acl>
-            <resources>
-                <admin>
-                    <children>
-                        <system>
-                            <children>
-                                <config>
-                                    <children>
-                                        <mf_shippingrule>
-                                            <title>Shipping Rules</title>
-                                        </mf_shippingrule>
-                                    </children>
-                                </config>
-                            </children>
-                        </system>
-                    </children>
-                </admin>
-            </resources>
-        </acl>
     </adminhtml>
+    <default>
+        <carriers>
+            <mf_shippingrule>
+                <active>1</active>
+                <model>mf_shippingrule/carrier</model>
+                <sort_order>10</sort_order>
+                <sallowspecific>0</sallowspecific>
+            </mf_shippingrule>
+        </carriers>
+    </default>
 </config>

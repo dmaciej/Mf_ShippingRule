@@ -10,7 +10,8 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Additional
         $form = new Varien_Data_Form();
 
         $fieldset = $form->addFieldset('rule_information', array(
-            'legend' => Mage::helper('mf_shippingrule')->__('Rule')
+            'legend' => Mage::helper('mf_shippingrule')->__('Additional Information'),
+            'class' => 'fieldset-wide',
         ));
 
         $fieldset->addField('code', 'text', array(

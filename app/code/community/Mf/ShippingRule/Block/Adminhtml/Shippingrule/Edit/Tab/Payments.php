@@ -10,7 +10,8 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Payments
         $form = new Varien_Data_Form();
 
         $fieldset = $form->addFieldset('payment', array(
-            'legend' => Mage::helper('mf_shippingrule')->__('Payment Methods')
+            'legend' => Mage::helper('mf_shippingrule')->__('Payment Methods'),
+            'class' => 'fieldset-wide',
         ));
 
         $fieldset->addField('payment_method', 'multiselect', array(

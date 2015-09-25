@@ -18,7 +18,13 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
     {
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
         $this->setCollection($collection);
-        return parent::_prepareCollection();
+        parent::_prepareCollection();
+
+        if (!Mage::app()->isSingleStoreMode()) {
+            $this->getCollection()->addStoreData();
+        }
+
+        return $this;
     }
 
     protected function _prepareColumns()
@@ -39,13 +45,14 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
         $this->addColumn('code', array(
             'header' => Mage::helper('adminhtml')->__('Method Code'),
             'index' => 'code',
-            'width' => 120,
+            'width' => 100,
         ));
+
 
         $this->addColumn('price', array(
             'header' => Mage::helper('adminhtml')->__('Price'),
             'index' => 'price',
-            'width' => 120,
+            'width' => 100,
             'type' => 'currency',
         ));
 
@@ -56,6 +63,18 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
             'options' => Mage::getSingleton('mf_shippingrule/rule_price_calculation')->getOptionArray(),
             'width' => 140,
         ));
+
+        if (!Mage::app()->isSingleStoreMode()) {
+            $this->addColumn('visible_in', array(
+                'header'        => Mage::helper('adminhtml')->__('Store View'),
+                'index'         => 'stores',
+                'type'          => 'store',
+                'store_all'     => true,
+                'store_view'    => true,
+                'sortable'      => false,
+                'filter_condition_callback' => array($this, '_filterStoreCondition'),
+            ));
+        }
 
         $this->addColumn('stop_rules_processing', array(
             'header' => Mage::helper('mf_shippingrule')->__('Stop Further Rules Processing'),
@@ -71,7 +90,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
         $this->addColumn('sort_order', array(
             'header' => Mage::helper('adminhtml')->__('Sort Order'),
             'index' => 'sort_order',
-            'width' => 100,
+            'width' => 90,
             'type' => 'number',
         ));
 
@@ -124,6 +143,15 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
         ));
 
         return $this;
+    }
+
+    protected function _filterStoreCondition($collection, $column)
+    {
+        if (!$value = $column->getFilter()->getValue()) {
+            return;
+        }
+
+        $this->getCollection()->addStoreFilter($value, false);
     }
 
     public function getGridUrl()

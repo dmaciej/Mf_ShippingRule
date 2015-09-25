@@ -10,7 +10,8 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
         $form = new Varien_Data_Form();
         
         $fieldset = $form->addFieldset('rule_information', array(
-            'legend' => Mage::helper('mf_shippingrule')->__('Rule')
+            'legend' => Mage::helper('mf_shippingrule')->__('Rule'),
+            'class' => 'fieldset-wide',
         ));
 
         $fieldset->addField('name', 'text', array(
@@ -31,6 +32,24 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
             'name' => 'price_calculation_method',
             'options' => Mage::getSingleton('mf_shippingrule/rule_price_calculation')->getOptionArray(),
         ));
+
+        if (!Mage::app()->isSingleStoreMode()) {
+            $fieldset->addField('store_ids', 'multiselect', array(
+                'label'     => Mage::helper('mf_shippingrule')->__('Available In'),
+                'required'  => true,
+                'name'      => 'store_ids[]',
+                'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
+                'value'     => $model->getStoreIds(),
+                'after_element_html' => Mage::getBlockSingleton('adminhtml/store_switcher')->getHintHtml()
+            ));
+        }
+        else {
+            $fieldset->addField('store_ids', 'hidden', array(
+                'name'      => 'store_ids[]',
+                'value'     => Mage::app()->getStore(true)->getId()
+            ));
+            $model->setStoreIds(Mage::app()->getStore(true)->getId());
+        }
 
         $fieldset->addField('stop_rules_processing', 'select', array(
             'label'     => Mage::helper('mf_shippingrule')->__('Stop Further Rules Processing'),

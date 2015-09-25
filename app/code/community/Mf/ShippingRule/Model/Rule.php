@@ -47,4 +47,24 @@ class Mf_ShippingRule_Model_Rule extends Mage_SalesRule_Model_Rule
 
         return $rate;
     }
+
+    public function addStoreId($storeId)
+    {
+        $ids = $this->getStoreIds();
+        if (!in_array($storeId, $ids)) {
+            $ids[] = $storeId;
+        }
+        $this->setStoreIds($ids);
+        return $this;
+    }
+
+    public function getStoreIds()
+    {
+        $ids = $this->_getData('store_ids');
+        if (is_null($ids)) {
+            $this->_getResource()->loadStoreIds($this);
+            $ids = $this->getData('store_ids');
+        }
+        return $ids;
+    }
 }

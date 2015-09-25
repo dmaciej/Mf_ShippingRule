@@ -19,6 +19,20 @@ class Mf_ShippingRule_Model_Resource_Rule extends Mage_Core_Model_Resource_Db_Ab
             $this->setActualProductAttributes($object, $ruleProductAttributes);
         }
 
+        $deleteWhere = $this->_getWriteAdapter()->quoteInto('rule_id = ?', $object->getId());
+        $this->_getWriteAdapter()->delete($this->getTable('mf_shippingrule/rule_store'), $deleteWhere);
+
+        $storeData = array();
+        foreach ($object->getStoreIds() as $storeId) {
+            $storeData[] = array(
+                'rule_id'   => $object->getId(),
+                'store_id'  => $storeId
+            );
+        }
+        if (!empty($storeData)) {
+            $this->_getWriteAdapter()->insertMultiple($this->getTable('mf_shippingrule/rule_store'), $storeData);
+        }
+
         return parent::_afterSave($object);
     }
 
@@ -72,5 +86,24 @@ class Mf_ShippingRule_Model_Resource_Rule extends Mage_Core_Model_Resource_Db_Ab
         }
 
         return $result;
+    }
+
+    public function loadStoreIds(Mf_ShippingRule_Model_Rule $object)
+    {
+        $storeIds = array();
+        if ($object->getId()) {
+            $storeIds = $this->lookupStoreIds($object->getId());
+        }
+        $object->setStoreIds($storeIds);
+    }
+
+    public function lookupStoreIds($id)
+    {
+        return $this->_getReadAdapter()->fetchCol(
+            $this->_getReadAdapter()->select()
+                ->from($this->getTable('mf_shippingrule/rule_store'), 'store_id')
+                ->where("{$this->getIdFieldName()} = :id_field"),
+            array(':id_field' => $id)
+        );
     }
 }

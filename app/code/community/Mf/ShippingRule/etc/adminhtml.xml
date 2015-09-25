@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <sales>
+            <children>
+                <mf_shippingrule module="mf_shippingrule">
+                    <title>Shipping Rules</title>
+                    <sort_order>100</sort_order>
+                    <children>
+                        <manage translate="title" module="mf_shippingrule">
+                            <title>Manage</title>
+                            <action>adminhtml/shippingrule</action>
+                            <sort_order>1</sort_order>
+                        </manage>
+                        <import translate="title" module="mf_shippingrule">
+                            <title>Import</title>
+                            <action>adminhtml/shippingrule/import</action>
+                            <sort_order>2</sort_order>
+                        </import>
+                    </children>
+                </mf_shippingrule>
+            </children>
+        </sales>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <mf_shippingrule>
+                                        <title>Shipping Rules</title>
+                                    </mf_shippingrule>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

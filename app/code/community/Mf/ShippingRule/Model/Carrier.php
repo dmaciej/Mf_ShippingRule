@@ -45,6 +45,7 @@ class Mf_ShippingRule_Model_Carrier
 
         $rules = Mage::getModel('mf_shippingrule/rule')->getCollection()
             ->addFieldToFilter('is_active', array('eq' => true))
+            ->addStoreFilter()
             ->setOrder('sort_order', 'asc');
 
         $customer = Mage::getSingleton('customer/session');

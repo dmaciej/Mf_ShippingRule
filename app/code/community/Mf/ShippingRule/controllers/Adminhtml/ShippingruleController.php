@@ -95,11 +95,36 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
                 if (empty($data['payment_method'])) {
                     $data['payment_method'] = array();
                 }
+
                 $model = Mage::getModel('mf_shippingrule/rule');
                 $model->load($id);
                 $model->loadPost($data);
                 $model->setData('payment_method', $data['payment_method']);
                 $this->_getSession()->setFormData($data);
+
+                $stores = isset($data['store_ids']) ? $data['store_ids'] : array();
+                $storeIds = array();
+                if (!is_array($stores) || count($stores) === 0) {
+                    Mage::throwException(Mage::helper('mf_shippingrule')->__('Please, select "Available in Stores" for this rule first.'));
+                }
+                if (is_array($stores)) {
+                    foreach ($stores as $storeIdList) {
+                        $storeIdList = explode(',', $storeIdList);
+                        if (count($storeIdList) === 0) {
+                            continue;
+                        }
+                        foreach ($storeIdList as $storeId) {
+                            if ($storeId >= 0) {
+                                $storeIds[] = $storeId;
+                            }
+                        }
+                    }
+                    if (count($storeIds) === 0) {
+                        Mage::throwException(Mage::helper('mf_shippingrule')->__('Please, select "Available in Stores" for this rule first.'));
+                    }
+                }
+                $model->setStoreIds($storeIds);
+
                 $model->save();
                 $this->_getSession()->setFormData(false);
                 $this->_getSession()->addSuccess(
@@ -154,6 +179,12 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
             try {
                 $model = Mage::getModel('mf_shippingrule/rule');
                 $model->load($id);
+                $storeIds = $model->getStoreIds();
+                if ($storeIds) {
+                    foreach ($storeIds as $storeId) {
+                        $model->addStoreId($storeId);
+                    }
+                }
                 $model->setId(null);
                 $model->save();
                 $this->_getSession()->addSuccess(
