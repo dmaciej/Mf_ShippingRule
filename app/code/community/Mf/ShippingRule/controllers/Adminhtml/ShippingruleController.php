@@ -414,7 +414,7 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
                                 }
                                 $model->setData($headers[$index], $value);
                             }
-                            $storeIdCol = array_search($headers, 'store_ids');
+                            $storeIdCol = array_search('store_ids', $headers);
                             if ($storeIdCol) {
                                 $storeIds = explode(',', $row[$storeIdCol]);
                                 if (!empty($storeIds)) {
