@@ -3,7 +3,7 @@
 class Mf_ShippingRule_Model_Resource_Rule extends Mage_Core_Model_Resource_Db_Abstract
 {
     protected $_serializableFields   = array(
-        'payment_method' => array(null, array())
+        'payment_method' => array('', array())
     );
 
     protected function _construct()

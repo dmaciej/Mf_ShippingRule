@@ -15,6 +15,6 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule
 
     public function getHeaderCssClass()
     {
-        return 'head-shipping-method '.parent::getHeaderCssClass();
+        return 'head-shipping-method '. parent::getHeaderCssClass();
     }
 }

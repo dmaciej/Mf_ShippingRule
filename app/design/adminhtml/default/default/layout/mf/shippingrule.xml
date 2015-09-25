@@ -28,4 +28,9 @@
         <remove name="root" />
         <block type="mf_shippingrule/adminhtml_shippingrule_grid" name="grid" output="toHtml" />
     </adminhtml_shippingrule_grid>
+    <adminhtml_shippingrule_import>
+        <reference name="content">
+            <block type="mf_shippingrule/adminhtml_shippingrule_import" name="import.form" />
+        </reference>
+    </adminhtml_shippingrule_import>
 </layout>

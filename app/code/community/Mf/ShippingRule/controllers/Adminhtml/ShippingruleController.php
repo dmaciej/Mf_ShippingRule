@@ -88,13 +88,17 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
     public function saveAction()
     {
         $id = $this->getRequest()->getParam('id', 0);
-        $data = $this->getRequest()->getParam('rule');
+        $data = $this->getRequest()->getParam('rule', array());
 
         if ($data) {
             try {
+                if (empty($data['payment_method'])) {
+                    $data['payment_method'] = array();
+                }
                 $model = Mage::getModel('mf_shippingrule/rule');
                 $model->load($id);
                 $model->loadPost($data);
+                $model->setData('payment_method', $data['payment_method']);
                 $this->_getSession()->setFormData($data);
                 $model->save();
                 $this->_getSession()->setFormData(false);
@@ -189,5 +193,219 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
             $html = '';
         }
         $this->getResponse()->setBody($html);
-  }
+    }
+
+    public function massDeleteAction()
+    {
+        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $deletedRules = 0;
+        foreach ($ruleIds as $ruleId) {
+            $rule = Mage::getModel('mf_shippingrule/rule')->load($ruleId);
+            $rule->delete();
+            ++$deletedRules;
+        }
+        $this->_getSession()->addSuccess($this->__('%s rule(s) have been deleted.', $deletedRules));
+        $this->_redirect('*/*/');
+    }
+
+    public function massEnableAction()
+    {
+        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $enabledRules = 0;
+        foreach ($ruleIds as $ruleId) {
+            $rule = Mage::getModel('mf_shippingrule/rule')->load($ruleId);
+            $rule->setIsActive(true);
+            $rule->save();
+            ++$enabledRules;
+        }
+        $this->_getSession()->addSuccess($this->__('%s rule(s) have been enabled.', $enabledRules));
+        $this->_redirect('*/*/');
+    }
+
+    public function massDisableAction()
+    {
+        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $disabledRules = 0;
+        foreach ($ruleIds as $ruleId) {
+            $rule = Mage::getModel('mf_shippingrule/rule')->load($ruleId);
+            $rule->setIsActive(false);
+            $rule->save();
+            ++$disabledRules;
+        }
+        $this->_getSession()->addSuccess($this->__('%s rule(s) have been disabled.', $disabledRules));
+        $this->_redirect('*/*/');
+    }
+
+    public function exportCsvAction()
+    {
+        $io = new Varien_Io_File();
+
+        $path = Mage::getBaseDir('var') . DS . 'export' . DS;
+        $name = 'mf_shippingrule_' . md5(microtime());
+        $file = $path . DS . $name . '.csv';
+
+        $io->setAllowCreateFolders(true);
+        $io->open(array('path' => $path));
+        $io->streamOpen($file, 'w+');
+        $io->streamLock(true);
+
+        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
+        if (!empty($ruleIds)) {
+            $collection->addFieldToFilter('rule_id', array('in' => $ruleIds));
+        }
+
+        $rule = $collection->getFirstItem();
+        if ($rule) {
+            $row = $rule->getData();
+            unset($row['rule_id']);
+            $headers = array_keys($row);
+            $io->streamWriteCsv($headers);
+        }
+
+        foreach ($collection as $rule) {
+            $row = $rule->getData();
+            unset($row['rule_id']);
+            $io->streamWriteCsv($row);
+        }
+
+        $io->streamUnlock();
+        $io->streamClose();
+
+        $this->_prepareDownloadResponse('rules.csv', array(
+            'type'  => 'filename',
+            'value' => $file,
+            'rm'    => true // can delete file after use
+        ));
+    }
+
+    public function exportXmlAction()
+    {
+        $io = new Varien_Io_File();
+
+        $path = Mage::getBaseDir('var') . DS . 'export' . DS;
+        $name = 'mf_shippingrule_' . md5(microtime());
+        $file = $path . DS . $name . '.xml';
+
+        $io->setAllowCreateFolders(true);
+        $io->open(array('path' => $path));
+        $io->streamOpen($file, 'w+');
+        $io->streamLock(true);
+
+        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
+        if (!empty($ruleIds)) {
+            $collection->addFieldToFilter('rule_id', array('in' => $ruleIds));
+        }
+
+        $indexes = array();
+        $rule = $collection->getFirstItem();
+        if ($rule) {
+            $row = $rule->getData();
+            unset($row['rule_id']);
+            $indexes = array_keys($row);
+        }
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml .= '<rules>';
+        foreach ($collection as $rule) {
+            $xml.= $rule->toXml($indexes, 'rule');
+        }
+        $xml .= '</rules>';
+
+        $doc = new DOMDocument('1.0');
+        $doc->preserveWhiteSpace = false;
+        $doc->formatOutput = true;
+        $doc->loadXML($xml);
+
+        $io->streamWrite($doc->saveXML());
+        $io->streamUnlock();
+        $io->streamClose();
+
+        $this->_prepareDownloadResponse('rules.xml', array(
+            'type'  => 'filename',
+            'value' => $file,
+            'rm'    => true // can delete file after use
+        ));
+    }
+
+    public function importPostAction()
+    {
+        $data = $this->getRequest()->getPost();
+        if (!empty($data)) {
+            if (
+                !empty($_FILES['file']['name'])
+                && !empty($_FILES['file']['tmp_name'])
+                && is_uploaded_file($_FILES['file']['tmp_name'])
+            ) {
+                $totalImported = 0;
+                $extension = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+
+                switch ($extension) {
+                    case 'xml':
+                        $xml = simplexml_load_file($_FILES['file']['tmp_name']);
+                        if ($xml && isset($xml->rule)) {
+                            foreach ($xml->rule as $rule) {
+                                $model = Mage::getModel('mf_shippingrule/rule');
+                                foreach ($rule->children() as $key => $value) {
+                                    $model->setData($key, $value);
+                                }
+                                $model->save();
+                                ++$totalImported;
+                            }
+                        }
+                        break;
+
+                    case 'csv':
+                        $file = new Varien_File_Csv();
+                        $data = $file->getData($_FILES['file']['tmp_name']);
+                        $headers = array_shift($data);
+                        foreach ($data as $row) {
+                            $model = Mage::getModel('mf_shippingrule/rule');
+                            foreach ($row as $index => $value) {
+                                if (!isset($headers[$index])) {
+                                    break;
+                                }
+                                $model->setData($headers[$index], $value);
+                            }
+                            $model->save();
+                            ++$totalImported;
+                        }
+                        break;
+                }
+
+                $this->_getSession()->addSuccess(
+                    $this->__('Imported rules: %s.', $totalImported)
+                );
+            } else {
+                $this->_getSession()->addError(
+                    $this->__('Error while uploading file.')
+                );
+            }
+        } else {
+            $this->_getSession()->addError(
+                $this->__('Error while uploading file.')
+            );
+        }
+
+        $this->_redirect('*/*/import');
+    }
+
+    public function importAction()
+    {
+        $maxUploadSize = Mage::helper('importexport')->getMaxUploadSize();
+        $this->_getSession()->addNotice(
+            $this->__('Total size of uploadable files must not exceed %s', $maxUploadSize)
+        );
+
+        $this->_title($this->__('Shipping Rules'))->_title($this->__('Import Rules'));
+
+        $this->_initAction()
+            ->_addBreadcrumb(
+                $this->_getHelper()->__('Import Rules'),
+                $this->_getHelper()->__('Import Rules')
+            );
+
+        $this->renderLayout();
+    }
 }

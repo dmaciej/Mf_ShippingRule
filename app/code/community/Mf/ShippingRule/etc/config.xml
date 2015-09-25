@@ -108,7 +108,18 @@
                     <mf_shippingrule module="mf_shippingrule">
                         <title>Shipping Rules</title>
                         <sort_order>100</sort_order>
-                        <action>adminhtml/shippingrule</action>
+                        <children>
+                            <manage translate="title" module="mf_shippingrule">
+                                <title>Manage</title>
+                                <action>adminhtml/shippingrule</action>
+                                <sort_order>1</sort_order>
+                            </manage>
+                            <import translate="title" module="mf_shippingrule">
+                                <title>Import</title>
+                                <action>adminhtml/shippingrule/import</action>
+                                <sort_order>2</sort_order>
+                            </import>
+                        </children>
                     </mf_shippingrule>
                 </children>
             </sales>
