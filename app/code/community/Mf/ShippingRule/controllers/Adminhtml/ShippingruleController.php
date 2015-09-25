@@ -291,11 +291,13 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
             $row = $rule->getData();
             unset($row['rule_id']);
             $headers = array_keys($row);
+            $headers[] = 'store_ids';
             $io->streamWriteCsv($headers);
         }
 
         foreach ($collection as $rule) {
             $row = $rule->getData();
+            $row['store_ids'] = implode(',', $rule->getStoreIds());
             unset($row['rule_id']);
             $io->streamWriteCsv($row);
         }
@@ -329,18 +331,19 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
             $collection->addFieldToFilter('rule_id', array('in' => $ruleIds));
         }
 
-        $indexes = array();
-        $rule = $collection->getFirstItem();
-        if ($rule) {
-            $row = $rule->getData();
-            unset($row['rule_id']);
-            $indexes = array_keys($row);
-        }
-
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
         $xml .= '<rules>';
         foreach ($collection as $rule) {
-            $xml.= $rule->toXml($indexes, 'rule');
+            $row = $rule->getData();
+            $row['store_ids'] = implode(',', $rule->getStoreIds());
+            unset($row['rule_id']);
+
+            $xml .= '<rule>';
+            foreach ($row as $fieldName => $fieldValue) {
+                $fieldValue = "<![CDATA[$fieldValue]]>";
+                $xml .= "<$fieldName>$fieldValue</$fieldName>";
+            }
+            $xml .= '</rule>';
         }
         $xml .= '</rules>';
 
@@ -379,8 +382,20 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
                             foreach ($xml->rule as $rule) {
                                 $model = Mage::getModel('mf_shippingrule/rule');
                                 foreach ($rule->children() as $key => $value) {
+                                    if ($key == 'store_ids') {
+                                        continue;
+                                    }
                                     $model->setData($key, $value);
                                 }
+                                $storeIds = isset($rule->store_ids) ? $rule->store_ids : '';
+                                $storeIds = explode(',', $storeIds);
+                                if (!empty($storeIds)) {
+                                    foreach ($storeIds as $storeId) {
+                                        $model->addStoreId($storeId);
+                                    }
+                                }
+                                // Serializable field.
+                                $model->setData('payment_method', unserialize($model->getData('payment_method')));
                                 $model->save();
                                 ++$totalImported;
                             }
@@ -394,11 +409,22 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
                         foreach ($data as $row) {
                             $model = Mage::getModel('mf_shippingrule/rule');
                             foreach ($row as $index => $value) {
-                                if (!isset($headers[$index])) {
+                                if (!isset($headers[$index]) || $headers[$index] == 'store_ids') {
                                     break;
                                 }
                                 $model->setData($headers[$index], $value);
                             }
+                            $storeIdCol = array_search($headers, 'store_ids');
+                            if ($storeIdCol) {
+                                $storeIds = explode(',', $row[$storeIdCol]);
+                                if (!empty($storeIds)) {
+                                    foreach ($storeIds as $storeId) {
+                                        $model->addStoreId($storeId);
+                                    }
+                                }
+                            }
+                            // Serializable field.
+                            $model->setData('payment_method', unserialize($model->getData('payment_method')));
                             $model->save();
                             ++$totalImported;
                         }
