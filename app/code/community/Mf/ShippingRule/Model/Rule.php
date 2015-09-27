@@ -30,15 +30,11 @@ class Mf_ShippingRule_Model_Rule extends Mage_SalesRule_Model_Rule
         $rate->setCarrier($carrier->getCarrierCode());
         $rate->setCarrierTitle($carrier->getConfigData('name'));
         $rate->setMethod($this->getId());
-        $rate->setMethodTitle($this->getName());
+        $rate->setMethodTitle($this->getFrontendName());
         $rate->setMethodDescription($this->getDescription());
 
-        if ($request->getFreeShipping() === true) {
-            $price = '0.00';
-        } else {
-            $price = $this->getPriceCalculationModel()
-                ->calculatePrice($this->getPrice(), $this->getPriceCalculationMethod(), $request);
-        }
+        $price = $this->getPriceCalculationModel()
+            ->calculatePrice($this->getPrice(), $this->getPriceCalculationMethod(), $request);
         $rate->setPrice($price);
         $rate->setCost(0);
         

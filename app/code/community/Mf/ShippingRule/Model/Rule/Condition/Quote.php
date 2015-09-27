@@ -59,14 +59,10 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
                 return 'time';
 
             case 'day_of_week':
-                return 'grid';
-
             case 'customer_group':
-                return 'multiselect';
-
             case 'country_id':
             case 'region_id':
-                return 'select';
+                return 'grid';
 
             default:
                 return 'string';
@@ -78,11 +74,9 @@ class Mf_ShippingRule_Model_Rule_Condition_Quote extends Mage_Rule_Model_Conditi
         switch ($this->getAttribute()) {
             case 'day_of_week':
             case 'customer_group':
-                return 'multiselect';
-
             case 'country_id':
             case 'region_id':
-                return 'select';
+                return 'multiselect';
 
             case 'date':
                 return 'date';

@@ -33,7 +33,6 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
             'header' => Mage::helper('adminhtml')->__('ID'),
             'align' => 'right',
             'width' => 50,
-            'type' => 'number',
             'index' => 'rule_id',
         ));
 
@@ -42,12 +41,16 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
             'index' => 'name',
         ));
 
+        $this->addColumn('frontend_name', array(
+            'header' => Mage::helper('adminhtml')->__('Frontend Name'),
+            'index' => 'frontend_name',
+        ));
+
         $this->addColumn('code', array(
             'header' => Mage::helper('adminhtml')->__('Method Code'),
             'index' => 'code',
             'width' => 100,
         ));
-
 
         $this->addColumn('price', array(
             'header' => Mage::helper('adminhtml')->__('Price'),
@@ -57,7 +60,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Grid
         ));
 
         $this->addColumn('price_calculation_method', array(
-            'header' => Mage::helper('adminhtml')->__('Price Calculation Method'),
+            'header' => Mage::helper('adminhtml')->__('Price Calculation Algorithm'),
             'index' => 'price_calculation_method',
             'type' => 'options',
             'options' => Mage::getSingleton('mf_shippingrule/rule_price_calculation')->getOptionArray(),

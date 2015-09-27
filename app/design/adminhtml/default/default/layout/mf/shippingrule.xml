@@ -13,9 +13,11 @@
         <reference name="left">
             <block type="mf_shippingrule/adminhtml_shippingrule_edit_tabs" name="tabs">
                 <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_main" name="main" />
+                <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_stores" name="stores" />
                 <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_additional" name="additional" />
                 <block type="mf_shippingrule/adminhtml_shippingrule_edit_tab_payments" name="payments" />
                 <action method="addTab"><name>main</name><block>main</block></action>
+                <action method="addTab"><name>stores</name><block>stores</block></action>
                 <action method="addTab"><name>additional</name><block>additional</block></action>
                 <action method="addTab"><name>payments</name><block>payments</block></action>
             </block>
@@ -28,9 +30,9 @@
         <remove name="root" />
         <block type="mf_shippingrule/adminhtml_shippingrule_grid" name="grid" output="toHtml" />
     </adminhtml_shippingrule_grid>
-    <adminhtml_shippingrule_import>
+    <adminhtml_shippingrule_import_index>
         <reference name="content">
             <block type="mf_shippingrule/adminhtml_shippingrule_import" name="import.form" />
         </reference>
-    </adminhtml_shippingrule_import>
+    </adminhtml_shippingrule_import_index>
 </layout>

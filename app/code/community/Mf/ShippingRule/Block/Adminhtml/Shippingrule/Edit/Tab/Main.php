@@ -20,6 +20,12 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
             'name' => 'name',
         ));
 
+        $fieldset->addField('frontend_name', 'text', array(
+            'label' => Mage::helper('mf_shippingrule')->__('Frontend Name'),
+            'name' => 'frontend_name',
+            'note' => Mage::helper('mf_shippingrule')->__('If empty, the general name will be used.'),
+        ));
+
         $fieldset->addField('price', 'text', array(
             'label' => Mage::helper('mf_shippingrule')->__('Price'),
             'required' => true,
@@ -27,29 +33,11 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
         ));
 
         $fieldset->addField('price_calculation_method', 'select', array(
-            'label' => Mage::helper('mf_shippingrule')->__('Price Calculation Method'),
+            'label' => Mage::helper('mf_shippingrule')->__('Price Calculation Algorithm'),
             'required' => true,
             'name' => 'price_calculation_method',
             'options' => Mage::getSingleton('mf_shippingrule/rule_price_calculation')->getOptionArray(),
         ));
-
-        if (!Mage::app()->isSingleStoreMode()) {
-            $fieldset->addField('store_ids', 'multiselect', array(
-                'label'     => Mage::helper('mf_shippingrule')->__('Available In'),
-                'required'  => true,
-                'name'      => 'store_ids[]',
-                'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
-                'value'     => $model->getStoreIds(),
-                'after_element_html' => Mage::getBlockSingleton('adminhtml/store_switcher')->getHintHtml()
-            ));
-        }
-        else {
-            $fieldset->addField('store_ids', 'hidden', array(
-                'name'      => 'store_ids[]',
-                'value'     => Mage::app()->getStore(true)->getId()
-            ));
-            $model->setStoreIds(Mage::app()->getStore(true)->getId());
-        }
 
         $fieldset->addField('stop_rules_processing', 'select', array(
             'label'     => Mage::helper('mf_shippingrule')->__('Stop Further Rules Processing'),
@@ -59,7 +47,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
                 '1' => Mage::helper('adminhtml')->__('Yes'),
                 '0' => Mage::helper('adminhtml')->__('No'),
             ),
-            'note'      => Mage::helper('mf_shippingrule')->__('Skip checking the following rules when it passed.')
+            'note'      => Mage::helper('mf_shippingrule')->__('Skip checking the following rules when it passed.'),
         ));
 
         $fieldset->addField('is_active', 'select', array(

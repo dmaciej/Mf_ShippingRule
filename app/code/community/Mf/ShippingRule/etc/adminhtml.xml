@@ -9,12 +9,12 @@
                     <children>
                         <manage translate="title" module="mf_shippingrule">
                             <title>Manage</title>
-                            <action>adminhtml/shippingrule</action>
+                            <action>adminhtml/shippingrule/index</action>
                             <sort_order>1</sort_order>
                         </manage>
                         <import translate="title" module="mf_shippingrule">
                             <title>Import</title>
-                            <action>adminhtml/shippingrule/import</action>
+                            <action>adminhtml/shippingrule_import/index</action>
                             <sort_order>2</sort_order>
                         </import>
                     </children>

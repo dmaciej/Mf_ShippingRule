@@ -5,16 +5,16 @@ $installer = $this;
 $installer->startSetup();
 
 /**
- * Add rule code.
+ * Add frontend name.
  */
 $table = $installer->getConnection()
     ->addColumn(
         $installer->getTable('mf_shippingrule/rule'),
-        'code',
+        'frontend_name',
         array(
             'type' => Varien_Db_Ddl_Table::TYPE_TEXT,
             'nullable'  => false,
-            'comment' => 'Method Code',
+            'comment' => 'Frontend Name',
         )
     );
 

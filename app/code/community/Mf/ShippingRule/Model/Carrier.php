@@ -14,32 +14,6 @@ class Mf_ShippingRule_Model_Carrier
             return false;
         }
 
-        $freeQty = 0;
-        if ($request->getAllItems()) {
-            foreach ($request->getAllItems() as $item) {
-                if ($item->getProduct()->isVirtual() || $item->getParentItem()) {
-                    continue;
-                }
-
-                if ($item->getHasChildren() && $item->isShipSeparately()) {
-                    foreach ($item->getChildren() as $child) {
-                        if ($child->getFreeShipping() && !$child->getProduct()->isVirtual()) {
-                            $freeQty += $item->getQty() * $child->getQty();
-                        }
-                    }
-                } elseif ($item->getFreeShipping()) {
-                    $freeQty += $item->getQty();
-                }
-            }
-        }
-
-        // Package weight and qty free shipping
-        $oldWeight = $request->getPackageWeight();
-        $oldQty = $request->getPackageQty();
-
-        $request->setPackageWeight($request->getFreeMethodWeight());
-        $request->setPackageQty($oldQty - $freeQty);
-
         /* @var $result Mage_Shipping_Model_Rate_Result */
         $result = Mage::getModel('shipping/rate_result');
 
@@ -48,14 +22,12 @@ class Mf_ShippingRule_Model_Carrier
             ->addStoreFilter()
             ->setOrder('sort_order', 'asc');
 
-        $customer = Mage::getSingleton('customer/session');
-
         $object = clone $request;
         $object->addData(array(
             'day_of_week' => Mage::getModel('core/date')->date('N'),
             'time' => Mage::getModel('core/date')->date('H:i'),
             'date' => Mage::getModel('core/date')->date('Y-m-d'),
-            'customer_group' => $customer->getCustomerGroupId(),
+            'customer_group' => Mage::getSingleton('customer/session')->getCustomerGroupId(),
             'base_subtotal' => $request->getPackageValue(),
             'total_qty' => $request->getPackageQty(),
             'weight' => $request->getPackageWeight(),
@@ -64,6 +36,7 @@ class Mf_ShippingRule_Model_Carrier
             'region_id' => $request->getDestRegionId(),
             'country_id' => $request->getDestCountryId(),
             'quote' => Mage::getSingleton('checkout/session')->getQuote(),
+            'customer' => Mage::getSingleton('customer/session'),
         ));
 
         foreach ($rules as $rule) {
@@ -79,9 +52,6 @@ class Mf_ShippingRule_Model_Carrier
                 }
             }
         }
-
-        $request->setPackageWeight($oldWeight);
-        $request->setPackageQty($oldQty);
 
         return $result;
     }

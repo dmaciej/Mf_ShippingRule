@@ -11,6 +11,15 @@ class Mf_ShippingRule_Model_Resource_Rule extends Mage_Core_Model_Resource_Db_Ab
         $this->_init('mf_shippingrule/rule', 'rule_id');
     }
 
+    public function getFrontendName()
+    {
+        if (!$this->getData('frontend_name')) {
+            return $this->getName();
+        }
+
+        return $this->getData('frontend_name');
+    }
+
     protected function _afterSave(Mage_Core_Model_Abstract $object)
     {
         // Save product attributes used in rule

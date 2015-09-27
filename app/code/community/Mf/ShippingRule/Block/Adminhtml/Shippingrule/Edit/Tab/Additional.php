@@ -22,6 +22,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Additional
         $fieldset->addField('description', 'textarea', array(
             'name'  => 'description',
             'label' => Mage::helper('mf_shippingrule')->__('Description'),
+            'note'  => Mage::helper('mf_shippingrule')->__('It can be visible in the checkout in some themes.'),
         ));
 
         $form->setValues($model->getData());
