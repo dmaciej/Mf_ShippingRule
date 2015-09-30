@@ -292,6 +292,8 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
         
         if (empty($ruleIds)) {
             $this->_getSession()->addError(Mage::helper('mf_shippingrule')->__('Please specify some rules.'));
+            $this->_redirect('*/*');
+            return;
         }
         
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
@@ -347,6 +349,8 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
         
         if (empty($ruleIds)) {
             $this->_getSession()->addError(Mage::helper('mf_shippingrule')->__('Please specify some rules.'));
+            $this->_redirect('*/*');
+            return;
         }
         
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
