@@ -112,6 +112,6 @@ class Mf_ShippingRule_Adminhtml_Shippingrule_ImportController
             );
         }
 
-        $this->_redirect('*/*/import');
+        $this->_redirect('*/*');
     }
 }
