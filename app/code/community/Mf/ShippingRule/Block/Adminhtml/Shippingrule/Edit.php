@@ -10,6 +10,23 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit
         $this->_blockGroup = 'mf_shippingrule';
         $this->_controller = 'adminhtml_shippingrule';
 
+        if ($this->getRule()) {
+            $this->_addButton(
+                'export_xml',
+                array(
+                    'label' => Mage::helper('mf_shippingrule')->__('Export XML'),
+                    'onclick' => 'setLocation(\''.$this->getExportXmlUrl().'\')',
+                )
+            );
+            $this->_addButton(
+                'export_csv',
+                array(
+                    'label' => Mage::helper('mf_shippingrule')->__('Export CSV'),
+                    'onclick' => 'setLocation(\''.$this->getExportCsvUrl().'\')',
+                )
+            );
+        }
+        
         if ($this->getRule()->isDuplicable()) {
             $this->_addButton(
                 'duplicate',
@@ -54,6 +71,16 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit
         }
     }
 
+    public function getExportCsvUrl()
+    {
+        return $this->getUrl('*/*/exportCsv', array('rule_id' => $this->getRequest()->getParam('id')));
+    }
+    
+    public function getExportXmlUrl()
+    {
+        return $this->getUrl('*/*/exportXml', array('rule_id' => $this->getRequest()->getParam('id')));
+    }
+    
     public function getDuplicateUrl()
     {
         return $this->getUrl('*/*/duplicate', array('id' => $this->getRequest()->getParam('id')));
