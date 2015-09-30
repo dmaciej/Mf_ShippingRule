@@ -79,7 +79,7 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
             ->setNewChildUrl($this->getUrl('*/*/newConditionHtml/form/rule_conditions_fieldset'));
 
         $fieldset = $form->addFieldset('conditions_fieldset', array(
-            'legend'=>Mage::helper('mf_shippingrule')->__('Conditions'))
+            'legend' => Mage::helper('mf_shippingrule')->__('Conditions'))
         )->setRenderer($renderer);
 
         $fieldset->addField('conditions', 'text', array(
@@ -89,6 +89,15 @@ class Mf_ShippingRule_Block_Adminhtml_Shippingrule_Edit_Tab_Main
             'required' => true,
         ))->setRule($model)->setRenderer(Mage::getBlockSingleton('rule/conditions'));
 
+        // Stores tab is hidden for a single store mode.
+        if (Mage::app()->isSingleStoreMode()) {
+            $fieldset->addField('store_ids', 'hidden', array(
+                'name'      => 'store_ids[]',
+                'value'     => Mage::app()->getStore(true)->getId()
+            ));
+            $model->setStoreIds(Mage::app()->getStore(true)->getId());
+        }
+        
         $form->setValues($model->getData());
         $form->setFieldNameSuffix('rule');
         $this->setForm($form);
