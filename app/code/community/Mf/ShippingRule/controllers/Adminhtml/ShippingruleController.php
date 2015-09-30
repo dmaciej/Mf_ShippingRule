@@ -283,7 +283,17 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
         $io->streamOpen($file, 'w+');
         $io->streamLock(true);
 
-        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $ruleId = $this->getRequest()->getParam('rule_id', false);
+        if ($ruleId === false) {
+            $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        } else {
+            $ruleIds = array($ruleId);
+        }
+        
+        if (empty($ruleIds)) {
+            $this->_getSession()->addError(Mage::helper('mf_shippingrule')->__('Please specify some rules.'));
+        }
+        
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
         if (!empty($ruleIds)) {
             $collection->addFieldToFilter('rule_id', array('in' => $ruleIds));
@@ -328,7 +338,17 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
         $io->streamOpen($file, 'w+');
         $io->streamLock(true);
 
-        $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        $ruleId = $this->getRequest()->getParam('rule_id', false);
+        if ($ruleId === false) {
+            $ruleIds = $this->getRequest()->getPost('rule_ids', array());
+        } else {
+            $ruleIds = array($ruleId);
+        }
+        
+        if (empty($ruleIds)) {
+            $this->_getSession()->addError(Mage::helper('mf_shippingrule')->__('Please specify some rules.'));
+        }
+        
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
         if (!empty($ruleIds)) {
             $collection->addFieldToFilter('rule_id', array('in' => $ruleIds));
