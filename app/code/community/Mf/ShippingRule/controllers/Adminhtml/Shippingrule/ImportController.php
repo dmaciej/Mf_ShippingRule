@@ -65,8 +65,9 @@ class Mf_ShippingRule_Adminhtml_Shippingrule_ImportController
                                 $storeIds = explode(',', $storeIds);
                                 $model->setStoreIds($storeIds);
 
-                                // Serializable field.
+                                // Serializable fields.
                                 $model->setData('payment_method', unserialize($model->getData('payment_method')));
+                                $model->setData('conditions', unserialize($model->getData('conditions_serialized'));
                                 $model->save();
                                 ++$totalImported;
                             }
@@ -90,8 +91,9 @@ class Mf_ShippingRule_Adminhtml_Shippingrule_ImportController
                                 $storeIds = explode(',', $row[$storeIdCol]);
                                 $model->setStoreIds($storeIds);
                             }
-                            // Serializable field.
+                            // Serializable fields.
                             $model->setData('payment_method', unserialize($model->getData('payment_method')));
+                            $model->setData('conditions', unserialize($model->getData('conditions_serialized'));
                             $model->save();
                             ++$totalImported;
                         }
