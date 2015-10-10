@@ -67,7 +67,7 @@ class Mf_ShippingRule_Adminhtml_Shippingrule_ImportController
 
                                 // Serializable fields.
                                 $model->setData('payment_method', unserialize($model->getData('payment_method')));
-                                $model->setData('conditions', unserialize($model->getData('conditions_serialized'));
+                                $model->setData('conditions', unserialize($model->getData('conditions_serialized')));
                                 $model->save();
                                 ++$totalImported;
                             }
@@ -93,7 +93,7 @@ class Mf_ShippingRule_Adminhtml_Shippingrule_ImportController
                             }
                             // Serializable fields.
                             $model->setData('payment_method', unserialize($model->getData('payment_method')));
-                            $model->setData('conditions', unserialize($model->getData('conditions_serialized'));
+                            $model->setData('conditions', unserialize($model->getData('conditions_serialized')));
                             $model->save();
                             ++$totalImported;
                         }
