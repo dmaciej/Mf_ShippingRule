@@ -290,12 +290,6 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
             $ruleIds = array($ruleId);
         }
         
-        if (empty($ruleIds)) {
-            $this->_getSession()->addError(Mage::helper('mf_shippingrule')->__('Please specify some rules.'));
-            $this->_redirect('*/*');
-            return;
-        }
-        
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
         if (!empty($ruleIds)) {
             $collection->addFieldToFilter('rule_id', array('in' => $ruleIds));
@@ -345,12 +339,6 @@ class Mf_ShippingRule_Adminhtml_ShippingruleController
             $ruleIds = $this->getRequest()->getPost('rule_ids', array());
         } else {
             $ruleIds = array($ruleId);
-        }
-        
-        if (empty($ruleIds)) {
-            $this->_getSession()->addError(Mage::helper('mf_shippingrule')->__('Please specify some rules.'));
-            $this->_redirect('*/*');
-            return;
         }
         
         $collection = Mage::getModel('mf_shippingrule/rule')->getCollection();
