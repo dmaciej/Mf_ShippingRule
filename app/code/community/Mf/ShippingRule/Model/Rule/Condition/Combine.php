@@ -21,7 +21,7 @@ class Mf_ShippingRule_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condi
         $conditions = array_merge_recursive($conditions, array(
             array('value'=>'salesrule/rule_condition_product_found', 'label'=>Mage::helper('salesrule')->__('Product attribute combination')),
             array('value'=>'salesrule/rule_condition_product_subselect', 'label'=>Mage::helper('salesrule')->__('Products subselection')),
-            array('value'=>'salesrule/rule_condition_combine', 'label'=>Mage::helper('salesrule')->__('Conditions combination')),
+            array('value'=>'mf_shippingrule/rule_condition_combine', 'label'=>Mage::helper('salesrule')->__('Conditions combination')),
             array('label'=>Mage::helper('salesrule')->__('Cart Attribute'), 'value'=>$attributes),
         ));
 
